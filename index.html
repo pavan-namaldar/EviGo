@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EviGo | Shared EV Vans for Daily Commute</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("LR2WGICHw5aUE7MKT"); /* Your EmailJS public key */
+    })();
+  </script>
+
+  <style>
+    :root{
+      --evigo-green:#16A34A;
+      --evigo-green-dark:#15803D;
+      --evigo-teal:#0F766E;
+      --evigo-bg:#ECFDF3;
+      --evigo-bg-soft:#E0F2F1;
+      --evigo-accent:#FACC15;
+      --evigo-text:#0F172A;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+    body{
+      background:radial-gradient(circle at top, #ECFDF3 0%, #F9FAFB 45%, #E0F2F1 100%);
+      color:var(--evigo-text);
+      scroll-behavior:smooth;
+      overflow-x:hidden;
+    }
+
+    /* NAV */
+    nav{
+      background:rgba(255,255,255,0.9);
+      backdrop-filter:blur(10px);
+      padding:10px 24px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      position:sticky;
+      top:0;
+      z-index:200;
+      box-shadow:0 10px 30px rgba(15,118,110,0.12);
+      border-bottom:1px solid rgba(22,163,74,0.2);
+    }
+    .nav-left{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .nav-logo-mark{
+      width:32px;
+      height:32px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--evigo-green),var(--evigo-teal));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:700;
+      font-size:1rem;
+      box-shadow:0 6px 14px rgba(15,118,110,0.4);
+    }
+    .nav-logo-text{
+      font-weight:700;
+      letter-spacing:0.05em;
+      color:var(--evigo-green-dark);
+      font-size:1rem;
+    }
+    .nav-tagline{
+      font-size:0.75rem;
+      color:#64748B;
+    }
+    .nav-links{
+      display:flex;
+      gap:18px;
+      align-items:center;
+    }
+    .nav-links a{
+      color:var(--evigo-teal);
+      text-decoration:none;
+      font-weight:500;
+      font-size:0.9rem;
+      position:relative;
+      padding:4px 4px;
+    }
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-3px;
+      width:0;
+      height:2px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--evigo-green),var(--evigo-accent));
+      transition:width 0.25s;
+    }
+    .nav-links a:hover::after{width:100%;}
+
+    /* BACKGROUND CITY */
+    .background-layer{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-1;
+    }
+    .city-full{
+      position:relative;
+      width:100%;
+      height:100%;
+      background:linear-gradient(180deg,#ECFDF3 0%,#DCFCE7 40%,#D1FAE5 100%);
+    }
+    .road-strip{
+      position:absolute;
+      bottom:8%;
+      left:-10%;
+      width:120%;
+      height:80px;
+      background:linear-gradient(#0F172A,#020617);
+      box-shadow:0 18px 40px rgba(0,0,0,0.55);
+      border-radius:40px;
+    }
+    .road-strip::before{
+      content:"";
+      position:absolute;
+      top:50%;
+      left:-20%;
+      width:140%;
+      height:6px;
+      background:repeating-linear-gradient(
+        to right,
+        #E5E7EB 0 40px,
+        transparent 40px 80px
+      );
+      transform:translateY(-50%);
+      opacity:0.9;
+    }
+    .tree-clean{
+      position:absolute;
+      bottom:12%;
+      width:80px;
+      height:140px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+    .tree-clean .trunk{
+      width:16px;
+      height:50px;
+      background:#78350F;
+      border-radius:4px;
+    }
+    .tree-clean .crown{
+      position:absolute;
+      bottom:40px;
+      width:90px;
+      height:90px;
+      background:radial-gradient(circle at 30% 20%,#ECFDF3 0,#22C55E 40%,#15803D 70%);
+      border-radius:50%;
+      box-shadow:0 0 18px rgba(34,197,94,0.8);
+    }
+    .van-bg{
+      position:absolute;
+      bottom:9%;
+      width:120px;
+      height:60px;
+      transform:translateX(-50vw);
+      animation:vanBgMove 24s linear infinite;
+    }
+    .van-bg:nth-of-type(1){animation-duration:20s;}
+    .van-bg:nth-of-type(2){animation-duration:26s;}
+    .van-bg:nth-of-type(3){animation-duration:30s;}
+    .van-bg:nth-of-type(4){animation-duration:34s;}
+    @keyframes vanBgMove{
+      0%{transform:translateX(-50vw);}
+      100%{transform:translateX(50vw);}
+    }
+    .van-body{
+      position:relative;
+      width:100%;
+      height:44px;
+      background:linear-gradient(145deg,#F9FAFB,#E5E7EB);
+      border-radius:12px 12px 16px 16px;
+      border:2px solid var(--evigo-green);
+      box-shadow:0 8px 18px rgba(15,23,42,0.6);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      font-weight:700;
+      color:var(--evigo-green-dark);
+    }
+    .van-body::before{
+      content:"";
+      position:absolute;
+      top:4px;
+      left:6px;
+      right:10px;
+      height:18px;
+      border-radius:8px;
+      background:linear-gradient(135deg,#E0F2FE,#F1F5F9);
+    }
+    .van-body::after{
+      content:"";
+      position:absolute;
+      bottom:-10px;
+      left:8px;
+      width:90px;
+      height:18px;
+      background:
+        radial-gradient(circle at 10px 9px,#020617 0 6px,#1F2937 6px 8px),
+        radial-gradient(circle at 80px 9px,#020617 0 6px,#1F2937 6px 8px);
+    }
+
+    /* HERO */
+    .hero{
+      min-height:80vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:80px 20px 70px;
+    }
+    .hero-inner{
+      max-width:880px;
+      background:linear-gradient(135deg,#FFFFFF,#ECFDF3);
+      border-radius:32px;
+      padding:40px 30px 35px;
+      box-shadow:20px 20px 40px rgba(15,118,110,0.16),
+                 -10px -10px 25px rgba(255,255,255,0.9);
+      border:1px solid rgba(22,163,74,0.16);
+    }
+    .hero-title-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(34,197,94,0.08);
+      color:var(--evigo-teal);
+      font-size:0.8rem;
+      margin-bottom:10px;
+    }
+    .hero h1{
+      font-size:2.6rem;
+      margin-bottom:12px;
+      background:linear-gradient(135deg,var(--evigo-green-dark),var(--evigo-teal));
+      -webkit-background-clip:text;
+      color:transparent;
+    }
+    .hero-subtitle{
+      font-size:1rem;
+      margin-bottom:20px;
+      color:#475569;
+    }
+    .hero-metrics{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:12px;
+      margin-bottom:24px;
+    }
+    .metric-pill{
+      background:linear-gradient(145deg,#FEFCE8,#FFFBEB);
+      color:#92400E;
+      padding:9px 16px;
+      border-radius:999px;
+      font-weight:600;
+      font-size:0.85rem;
+      box-shadow:8px 8px 18px rgba(0,0,0,0.1),
+                 -4px -4px 10px rgba(255,255,255,0.95);
+    }
+
+    .hero-brand-line{
+      font-size:0.9rem;
+      color:#64748B;
+      margin-bottom:8px;
+    }
+
+    /* OFFER ENTRY */
+    .offer-entry-card{
+      margin-top:10px;
+      padding:16px 20px 18px;
+      border-radius:22px;
+      background:#FFFFFF;
+      box-shadow:0 12px 30px rgba(15,23,42,0.08);
+      text-align:left;
+      border:1px solid rgba(148,163,184,0.25);
+    }
+    .offer-entry-card h3{
+      font-size:1.05rem;
+      color:var(--evigo-green-dark);
+      margin-bottom:4px;
+    }
+    .offer-entry-sub{
+      font-size:0.9rem;
+      color:#475569;
+      margin-bottom:10px;
+    }
+    .offer-entry-form{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .offer-entry-group{
+      display:flex;
+      flex-direction:column;
+      min-width:180px;
+      flex:1;
+    }
+    .offer-entry-group label{
+      font-size:0.8rem;
+      font-weight:600;
+      color:var(--evigo-teal);
+      margin-bottom:3px;
+    }
+    .offer-entry-group input{
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      outline:none;
+      font-size:0.9rem;
+      box-shadow:4px 4px 10px rgba(15,23,42,0.06),
+                 -2px -2px 6px rgba(255,255,255,0.95);
+    }
+    .offer-entry-group input:focus{
+      border-color:var(--evigo-green);
+      box-shadow:0 0 0 2px rgba(34,197,94,0.25);
+    }
+    .offer-entry-note{
+      font-size:0.75rem;
+      color:#94A3B8;
+      margin-top:2px;
+    }
+    .game-entry-message{
+      margin-top:6px;
+      font-size:0.85rem;
+      color:#B45309;
+      font-weight:600;
+    }
+    .game-btn{
+      margin-top:10px;
+      background:linear-gradient(135deg,var(--evigo-green),var(--evigo-green-dark));
+      color:white;
+      padding:10px 24px;
+      border:none;
+      border-radius:999px;
+      font-size:0.95rem;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow:0 10px 0 #14532D,0 16px 24px rgba(15,23,42,0.35);
+    }
+
+    /* POPUP */
+    .popup-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,0.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.2s ease;
+      z-index:300;
+    }
+    .popup-overlay.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .popup-card{
+      max-width:360px;
+      width:90%;
+      background:#FFFFFF;
+      border-radius:20px;
+      padding:22px 20px 18px;
+      box-shadow:0 18px 40px rgba(15,23,42,0.5);
+      text-align:center;
+      border:1px solid rgba(22,163,74,0.2);
+    }
+    .popup-card h3{
+      font-size:1.25rem;
+      color:var(--evigo-green-dark);
+      margin-bottom:10px;
+    }
+    .popup-card p{
+      font-size:0.95rem;
+      color:#475569;
+      margin-bottom:6px;
+    }
+    .popup-btn{
+      margin-top:10px;
+      background:linear-gradient(135deg,var(--evigo-accent),#F97316);
+      color:white;
+      padding:10px 28px;
+      border:none;
+      border-radius:999px;
+      font-size:0.95rem;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow:0 10px 0 #C2410C,0 16px 24px rgba(15,23,42,0.35);
+    }
+
+    .hero-cta{
+      background:linear-gradient(135deg,var(--evigo-teal),var(--evigo-green-dark));
+      color:white;
+      padding:13px 32px;
+      border:none;
+      border-radius:999px;
+      font-size:0.95rem;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow:0 12px 0 #0F172A,0 18px 28px rgba(15,23,42,0.45);
+      margin-top:16px;
+    }
+    .thank-text{
+      display:none;
+      color:var(--evigo-teal);
+      margin-top:12px;
+      font-weight:600;
+      font-size:0.9rem;
+    }
+
+    .booking-card{
+      margin-top:18px;
+      padding:18px 20px 20px;
+      border-radius:22px;
+      background:#FFFFFF;
+      box-shadow:0 14px 30px rgba(15,23,42,0.12);
+      text-align:left;
+      display:none;
+      border:1px solid rgba(148,163,184,0.35);
+    }
+    .booking-card h3{
+      font-size:1.05rem;
+      color:var(--evigo-green-dark);
+      margin-bottom:6px;
+    }
+    .booking-subtext{
+      font-size:0.9rem;
+      color:#475569;
+      margin-bottom:10px;
+    }
+    .booking-form{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+    .booking-group{
+      display:flex;
+      flex-direction:column;
+      min-width:180px;
+      flex:1;
+    }
+    .booking-group label{
+      font-size:0.8rem;
+      font-weight:600;
+      color:var(--evigo-teal);
+      margin-bottom:3px;
+    }
+    .booking-group input{
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      outline:none;
+      font-size:0.9rem;
+      box-shadow:4px 4px 10px rgba(15,23,42,0.06),
+                 -2px -2px 6px rgba(255,255,255,0.95);
+    }
+    .booking-btn{
+      margin-top:10px;
+      background:linear-gradient(135deg,var(--evigo-green),var(--evigo-green-dark));
+      color:white;
+      padding:11px 24px;
+      border:none;
+      border-radius:999px;
+      font-size:0.95rem;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow:0 10px 0 #14532D,0 16px 24px rgba(15,23,42,0.35);
+    }
+    .booking-result{
+      margin-top:8px;
+      font-size:0.9rem;
+      color:var(--evigo-teal);
+      font-weight:600;
+    }
+
+    section{
+      padding:70px 20px;
+      max-width:1200px;
+      margin:auto;
+    }
+    h2{
+      text-align:center;
+      margin-bottom:40px;
+      font-size:2rem;
+      color:var(--evigo-green-dark);
+    }
+    .impact-cards,.services{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:30px;
+    }
+    .card-3d{
+      background:linear-gradient(145deg,#FFFFFF,#E0F2F1);
+      border-radius:24px;
+      padding:26px 24px;
+      text-align:center;
+      box-shadow:16px 16px 30px rgba(15,23,42,0.14),
+                 -8px -8px 20px rgba(255,255,255,0.95);
+      border:1px solid rgba(148,163,184,0.35);
+    }
+    .card-3d h3{
+      margin-bottom:14px;
+      color:var(--evigo-teal);
+    }
+    .card-3d p{
+      color:#475569;
+      font-weight:500;
+    }
+
+    .about-wrapper{
+      background:linear-gradient(145deg,#FFFFFF,#ECFDF3);
+      border-radius:28px;
+      padding:40px 32px;
+      box-shadow:20px 20px 40px rgba(15,23,42,0.16),
+                 -10px -10px 25px rgba(255,255,255,0.95);
+      border:1px solid rgba(22,163,74,0.2);
+    }
+    .about-wrapper p{color:#475569;}
+    .about-wrapper ul{
+      list-style:none;
+      padding:0;
+      margin-top:18px;
+      color:#14532D;
+    }
+    .about-wrapper li{margin-bottom:8px;}
+
+    .contact-link{
+      color:var(--evigo-teal);
+      text-decoration:underline;
+      font-weight:600;
+    }
+
+    .waitlist-floating{
+      position:fixed;
+      bottom:25px;
+      right:25px;
+      z-index:250;
+    }
+    .waitlist-floating button{
+      background:linear-gradient(135deg,var(--evigo-green),var(--evigo-teal));
+      color:white;
+      padding:12px 24px;
+      border:none;
+      border-radius:999px;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 12px 0 #14532D,0 18px 28px rgba(15,23,42,0.4);
+      font-size:0.85rem;
+    }
+
+    footer{
+      text-align:center;
+      padding:24px;
+      background:#022C22;
+      color:#E5E7EB;
+      box-shadow:0 -10px 25px rgba(15,23,42,0.5);
+      font-size:0.85rem;
+    }
+    footer span{
+      color:#A7F3D0;
+      font-weight:600;
+    }
+
+    @media(max-width:768px){
+      .hero-inner{padding:30px 18px;}
+      .hero h1{font-size:2.1rem;}
+      section{padding:50px 16px;}
+      .nav-links{display:none;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="background-layer">
+  <div class="city-full">
+    <div class="road-strip"></div>
+
+    <div class="tree-clean" style="left:6%;">
+      <div class="trunk"></div>
+      <div class="crown"></div>
+    </div>
+    <div class="tree-clean" style="left:18%;">
+      <div class="trunk"></div>
+      <div class="crown"></div>
+    </div>
+    <div class="tree-clean" style="left:30%;">
+      <div class="trunk"></div>
+      <div class="crown"></div>
+    </div>
+    <div class="tree-clean" style="left:42%;">
+      <div class="trunk"></div>
+      <div class="crown"></div>
+    </div>
+
+    <div class="van-bg" style="left:8%;">
+      <div class="van-body">EviGo EV</div>
+    </div>
+    <div class="van-bg" style="left:28%;">
+      <div class="van-body">Shared Ride</div>
+    </div>
+    <div class="van-bg" style="left:50%;">
+      <div class="van-body">Fresh Air</div>
+    </div>
+    <div class="van-bg" style="left:70%;">
+      <div class="van-body">Happy Trees</div>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo-mark">E</div>
+    <div>
+      <div class="nav-logo-text">EviGo</div>
+      <div class="nav-tagline">Shared EV Vans for Daily Commute</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#how">How</a>
+    <a href="#impact">Impact</a>
+    <a href="#about">Why EviGo</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-inner">
+
+    <span class="hero-title-tag">⚡ EviGo • Shared Electric Vans</span>
+    <h1>Save Money. Breathe Better. Ride EviGo.</h1>
+    <p class="hero-subtitle">EviGo runs shared electric vans so your daily commute becomes cheaper, cleaner and calmer for you and your city.</p>
+
+    <p class="hero-brand-line">EviGo is built for office-goers and students who want predictable rides, lower costs and greener streets.</p>
+
+    <div class="hero-metrics">
+      <div class="metric-pill">💰 Save ₹5,000+ every month on commute</div>
+      <div class="metric-pill">🌱 Avoid ~550 kg CO₂ every year</div>
+      <div class="metric-pill">⏱ Win back 30+ mins every day</div>
+    </div>
+
+    <div class="offer-entry-card">
+      <h3>🎁 EviGo Welcome Offer: ₹549 OFF</h3>
+      <p class="offer-entry-sub">
+        Enter your name, mobile number and Gmail to unlock your EviGo welcome offer.  
+        You get ₹549 OFF on your first weekly EviGo shared EV van subscription.
+      </p>
+
+      <div class="offer-entry-form">
+        <div class="offer-entry-group">
+          <label for="offerName">Your Name</label>
+          <input id="offerName" type="text" placeholder="e.g., Pavan" required>
+        </div>
+        <div class="offer-entry-group">
+          <label for="offerPhone">Mobile Number</label>
+          <input id="offerPhone" type="tel" maxlength="10" placeholder="10-digit mobile" required>
+          <small class="offer-entry-note">One mobile number can claim this EviGo offer only once.</small>
+        </div>
+        <div class="offer-entry-group">
+          <label for="offerEmail">Email (Gmail)</label>
+          <input id="offerEmail" type="email" placeholder="e.g., you@gmail.com" required>
+        </div>
+      </div>
+
+      <button id="claimOfferBtn" class="game-btn" type="button">Claim My EviGo ₹549 OFF</button>
+      <p id="offerEntryMessage" class="game-entry-message"></p>
+    </div>
+
+    <div id="offerPopup" class="popup-overlay">
+      <div class="popup-card">
+        <h3>🎉 Your EviGo Offer is Ready</h3>
+        <p id="offerPopupLine"></p>
+        <button type="button" class="popup-btn" onclick="closeOfferPopup()">Continue to EviGo Booking</button>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <h3>📅 Book your first EviGo week</h3>
+      <p class="booking-subtext">
+        Tell EviGo your pickup and drop. We estimate weekly price at ₹5/km, 2 EviGo rides per day, 5 days a week.
+      </p>
+
+      <div class="booking-form">
+        <div class="booking-group">
+          <label for="pickup">Pickup (From)</label>
+          <input id="pickup" type="text" placeholder="e.g., Shivaji Nagar, Bodhan">
+        </div>
+        <div class="booking-group">
+          <label for="drop">Drop (To)</label>
+          <input id="drop" type="text" placeholder="e.g., Ambedkar Nagar, Bodhan">
+        </div>
+        <div class="booking-group">
+          <label for="distance">One-way distance (km)</label>
+          <input id="distance" type="number" min="1" step="0.1" placeholder="e.g., 8">
+        </div>
+      </div>
+
+      <button class="booking-btn" type="button" onclick="handleBooking()">Book EviGo & Calculate Weekly Price</button>
+
+      <p id="bookingResult" class="booking-result">
+        Share your route to see your EviGo weekly subscription price.
+      </p>
+    </div>
+
+    <button class="hero-cta" onclick="joinWaitlist()">Join the EviGo Green-Saver List</button>
+    <p id="thankYouMsg" class="thank-text">
+      Thank you! An EviGo van and a happy city tree are now rooting for you. 🌳
+    </p>
+  </div>
+</section>
+
+<section id="how">
+  <h2>How EviGo Works</h2>
+  <div class="impact-cards">
+    <div class="card-3d">
+      <h3>👥 9 Riders, 1 EviGo Van</h3>
+      <p>One shared EviGo electric van replaces up to 9 petrol vehicles and cuts both fuel spend and traffic noise on your route.</p>
+    </div>
+    <div class="card-3d">
+      <h3>📍 Fixed EviGo Routes</h3>
+      <p>EviGo designs fixed routes between housing clusters and colleges or offices so your pickup and drop stay predictable.</p>
+    </div>
+    <div class="card-3d">
+      <h3>⚡ 100% Electric EviGo Fleet</h3>
+      <p>EviGo vans are fully electric, so your rides add almost zero local pollution and keep roadside trees greener.</p>
+    </div>
+  </div>
+</section>
+
+<section id="impact">
+  <h2>Your EviGo Impact</h2>
+  <div class="impact-cards">
+    <div class="card-3d">
+      <h3>💰 EviGo Saves You Money</h3>
+      <p>Shift to EviGo shared vans and you can save around ₹5,000 - ₹6,000 per month compared to solo cabs and bike taxis.</p>
+    </div>
+    <div class="card-3d">
+      <h3>🌳 EviGo Keeps Trees Happy</h3>
+      <p>Each regular EviGo rider avoids roughly 550 kg of CO₂ per year, which means cleaner air along your daily route.</p>
+    </div>
+    <div class="card-3d">
+      <h3>⏱ EviGo Gives Time Back</h3>
+      <p>Planned EviGo routes and fixed timings reduce waiting and searching, giving you back 30+ minutes every day.</p>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-wrapper">
+    <h2>Why Riders Choose EviGo</h2>
+    <p>EviGo focuses only on daily commuting, so every decision is optimized for your route, your wallet and your city’s air.</p>
+    <ul>
+      <li>✔ EviGo uses no surge pricing, so your commute cost stays predictable.</li>
+      <li>✔ Only verified office-goers and students share your EviGo van.</li>
+      <li>✔ Shared electric vans mean quieter streets and less exhaust on your lane.</li>
+      <li>✔ Fixed EviGo routes reduce random traffic jams near your college or office.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Talk To the EviGo Team</h2>
+  <div class="services">
+    <div class="card-3d">
+      <h3>📞 Call EviGo</h3>
+      <p>+91 7093816843</p>
+      <a href="tel:+917093816843" class="contact-link">Call Now</a>
+    </div>
+    <div class="card-3d">
+      <h3>✉ Email EviGo</h3>
+      <p>evigoride@gmail.com</p>
+      <a href="mailto:evigoride@gmail.com" class="contact-link">Send Email</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>EviGo</span> • Shared EV Vans for Daily Commute • EV vans roam, trees stay happy, your commute gets cheaper.
+</footer>
+
+<div class="waitlist-floating">
+  <button onclick="joinWaitlist()">Join EviGo Waitlist</button>
+</div>
+
+<script>
+  const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwRGGW3aQQCVFc4LGW0whzYrwOHO5eusjPneLGDcM49ayhkC16kpZ7ezj4PaNNOJnGN/exec";
+
+  function joinWaitlist() {
+    window.open('https://forms.gle/BRAY3Crr52CdLRbz6','_blank');
+    const msg = document.getElementById('thankYouMsg');
+    if(msg){
+      msg.style.display='block';
+    }
+  }
+
+  function calculatePrice(){
+    const pickup = document.getElementById("pickup").value.trim();
+    const drop = document.getElementById("drop").value.trim();
+    const distanceInput = document.getElementById("distance");
+    const resultEl = document.getElementById("bookingResult");
+
+    if(!pickup || !drop){
+      resultEl.textContent = "Please enter both pickup and drop locations for your EviGo route.";
+      return null;
+    }
+
+    const distanceKm = parseFloat(distanceInput.value);
+    if(isNaN(distanceKm) || distanceKm <= 0){
+      resultEl.textContent = "Please enter a valid one-way distance in km (e.g., 8) for your EviGo ride.";
+      return null;
+    }
+
+    const ratePerKm = 5;
+    const dailyTwoWay = distanceKm * 2 * ratePerKm;
+    const weekly = dailyTwoWay * 5;
+    const approxMonthly = dailyTwoWay * 22;
+
+    resultEl.textContent =
+      `For your EviGo route ${pickup} → ${drop}, one-way ${distanceKm.toFixed(1)} km at ₹5/km: ` +
+      `approx ₹${Math.round(weekly).toLocaleString("en-IN")} for your first EviGo week, ` +
+      `~₹${Math.round(approxMonthly).toLocaleString("en-IN")} per month.`;
+
+    return { pickup, drop, distanceKm, weekly, approxMonthly };
+  }
+
+  function setupOffer(){
+    const nameInput = document.getElementById("offerName");
+    const phoneInput = document.getElementById("offerPhone");
+    const emailInput = document.getElementById("offerEmail");
+    const claimBtn = document.getElementById("claimOfferBtn");
+    const msg = document.getElementById("offerEntryMessage");
+
+    if(!nameInput || !phoneInput || !emailInput || !claimBtn) return;
+
+    claimBtn.addEventListener("click", async ()=>{
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const email = emailInput.value.trim();
+
+      if(!name || !phone || !email){
+        msg.textContent = "Name, mobile number and Gmail are compulsory for your EviGo offer.";
+        return;
+      }
+      if(phone.length !== 10 || !/^\d{10}$/.test(phone)){
+        msg.textContent = "Please enter a valid 10-digit mobile number.";
+        return;
+      }
+      if(!/^[^@]+@gmail\.com$/i.test(email)){
+        msg.textContent = "Please enter a valid Gmail address for EviGo updates.";
+        return;
+      }
+
+      const key = `evigo_offer_${phone}`;
+      if(localStorage.getItem(key)){
+        msg.textContent = "This mobile has already claimed the EviGo welcome offer. Scroll down to booking.";
+        showBookingCard();
+        return;
+      }
+
+      // Save locally
+      localStorage.setItem("evigo_user_name", name);
+      localStorage.setItem("evigo_user_phone", phone);
+      localStorage.setItem("evigo_user_email", email);
+      localStorage.setItem(key, "1");
+
+      // SEND TO GOOGLE SHEETS WEBAPP
+      try{
+        await fetch(SHEET_WEBAPP_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: name,
+            phone: phone,
+            email: email,
+            source: "evigo_landing_offer"
+          })
+        });
+        console.log("Sent to sheet");
+      }catch(err){
+        console.error("Sheet error", err);
+      }
+
+      const popup = document.getElementById("offerPopup");
+      const line = document.getElementById("offerPopupLine");
+
+      if(line){
+        const last4 = phone.slice(-4);
+        line.textContent = `Hi ${name}, your EviGo welcome offer of ₹549 OFF is unlocked for mobile ending with ****${last4}.`;
+      }
+      if(popup){
+        popup.classList.add("show");
+      }
+    });
+  }
+
+  function showBookingCard(){
+    const bookingCard = document.querySelector(".booking-card");
+    if(bookingCard){
+      bookingCard.style.display = "block";
+    }
+  }
+
+  function closeOfferPopup(){
+    const popup = document.getElementById("offerPopup");
+    if(popup){
+      popup.classList.remove("show");
+    }
+    showBookingCard();
+    const bookingCard = document.querySelector(".booking-card");
+    if(bookingCard){
+      bookingCard.scrollIntoView({behavior:"smooth"});
+    }
+  }
+
+  function handleBooking(){
+    const result = calculatePrice();
+    if(!result){
+      return;
+    }
+
+    const name  = localStorage.getItem("evigo_user_name")  || "EviGo rider";
+    const email = localStorage.getItem("evigo_user_email");
+
+    if(!email){
+      const msg = document.getElementById("bookingResult");
+      if(msg){
+        msg.textContent += " (Please fill your name, mobile and Gmail above to receive an EviGo confirmation email.)";
+      }
+      return;
+    }
+
+    const templateParams = {
+      to_name: name,
+      pickup: result.pickup,
+      drop: result.drop,
+      distance: result.distanceKm.toFixed(1),
+      weekly_price: Math.round(result.weekly).toLocaleString("en-IN")
+    };
+
+    emailjs.send("service_la0v3gw", "template_4ij0lps", templateParams)
+      .then(function(response) {
+        console.log("Email sent", response.status, response.text);
+      })
+      .catch(function(error) {
+        console.error("Email error", error);
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", ()=>{
+    setupOffer();
+  });
+</script>
+</body>
+</html>
