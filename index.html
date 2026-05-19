@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Evigo Technologies</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+      scroll-behavior:smooth;
+    }
+
+    body{
+      background:#0b1020;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    .container{
+      width:90%;
+      max-width:1200px;
+      margin:auto;
+    }
+
+    header{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      padding:18px 0;
+      backdrop-filter:blur(12px);
+      background:rgba(11,16,32,0.85);
+      border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    /* LOGO */
+
+    .logo img{
+      height:60px;
+      object-fit:contain;
+    }
+
+    /* NAVIGATION */
+
+    .nav-links{
+      display:flex;
+      gap:30px;
+    }
+
+    .nav-links a{
+      color:white;
+      text-decoration:none;
+      transition:0.3s;
+      font-size:15px;
+      font-weight:500;
+    }
+
+    .nav-links a:hover{
+      color:#00ffb3;
+    }
+
+    /* HERO SECTION */
+
+    .hero{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:50px 20px;
+      position:relative;
+      overflow:hidden;
+
+      background:
+      radial-gradient(circle at top left, rgba(0,255,179,0.12), transparent 30%),
+      radial-gradient(circle at bottom right, rgba(0,140,255,0.12), transparent 30%),
+      linear-gradient(135deg,#0b1020,#111a35,#0b1020);
+    }
+
+    /* WATERMARK LOGO */
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      width:750px;
+      height:750px;
+
+      background:url('logo.png') center center no-repeat;
+      background-size:contain;
+
+      opacity:0.05;
+      z-index:0;
+
+      animation:floatLogo 8s ease-in-out infinite;
+    }
+
+    @keyframes floatLogo{
+
+      0%{
+        transform:translateY(0px);
+      }
+
+      50%{
+        transform:translateY(-20px);
+      }
+
+      100%{
+        transform:translateY(0px);
+      }
+
+    }
+
+    .hero-content{
+      max-width:900px;
+      position:relative;
+      z-index:2;
+    }
+
+    .hero h1{
+      font-size:72px;
+      line-height:1.2;
+      margin-bottom:25px;
+      font-weight:700;
+    }
+
+    .hero h1 span{
+      color:#00ffb3;
+    }
+
+    .hero p{
+      font-size:18px;
+      color:#d6d6d6;
+      line-height:1.9;
+      max-width:800px;
+      margin:auto;
+    }
+
+    /* BUTTON */
+
+    .btn{
+      display:inline-block;
+      margin-top:35px;
+      padding:15px 38px;
+      border-radius:50px;
+      text-decoration:none;
+      font-weight:600;
+      transition:0.3s;
+
+      background:#00ffb3;
+      color:#000;
+
+      box-shadow:0 0 25px rgba(0,255,179,0.25);
+    }
+
+    .btn:hover{
+      transform:translateY(-4px);
+      box-shadow:0 0 40px rgba(0,255,179,0.45);
+    }
+
+    section{
+      padding:100px 0;
+    }
+
+    .section-title{
+      text-align:center;
+      font-size:45px;
+      margin-bottom:60px;
+    }
+
+    /* ABOUT */
+
+    .about{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:60px;
+      align-items:center;
+    }
+
+    .evigo-box{
+      height:350px;
+      border-radius:25px;
+
+      background:
+      linear-gradient(135deg,#111a35,#0b1020);
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      border:1px solid rgba(255,255,255,0.06);
+
+      box-shadow:0 0 50px rgba(0,255,179,0.12);
+    }
+
+    .evigo-box img{
+      width:80%;
+      object-fit:contain;
+    }
+
+    .about-text p{
+      line-height:1.9;
+      color:#cccccc;
+      margin-bottom:20px;
+    }
+
+    /* SOLUTIONS */
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:30px;
+    }
+
+    .card{
+      background:#121a30;
+      padding:35px;
+      border-radius:22px;
+
+      border:1px solid rgba(255,255,255,0.05);
+
+      transition:0.3s;
+    }
+
+    .card:hover{
+      transform:translateY(-10px);
+
+      border-color:#00ffb3;
+
+      box-shadow:0 0 30px rgba(0,255,179,0.12);
+    }
+
+    .card h3{
+      color:#00ffb3;
+      margin-bottom:18px;
+      font-size:22px;
+    }
+
+    .card p{
+      color:#cccccc;
+      line-height:1.8;
+    }
+
+    /* VISION */
+
+    .vision-card{
+      background:#121a30;
+      padding:50px;
+      border-radius:25px;
+      text-align:center;
+      line-height:2;
+      color:#cccccc;
+      font-size:18px;
+
+      border:1px solid rgba(255,255,255,0.05);
+    }
+
+    /* CONTACT */
+
+    .contact{
+      text-align:center;
+    }
+
+    .contact p{
+      margin:15px 0;
+      color:#cccccc;
+      font-size:17px;
+    }
+
+    footer{
+      padding:35px 0;
+      text-align:center;
+      background:#050814;
+      color:#888;
+      border-top:1px solid rgba(255,255,255,0.05);
+    }
+
+    /* MOBILE */
+
+    @media(max-width:900px){
+
+      .hero h1{
+        font-size:46px;
+      }
+
+      .about{
+        grid-template-columns:1fr;
+      }
+
+      .nav-links{
+        display:none;
+      }
+
+      .section-title{
+        font-size:36px;
+      }
+
+      .hero::before{
+        width:450px;
+        height:450px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header>
+
+    <div class="container">
+
+      <nav>
+
+        <div class="logo">
+          <img src="logo.png.png" alt="Evigo Logo">
+        </div>
+
+        <div class="nav-links">
+          <a href="#about">About</a>
+          <a href="#solutions">Solutions</a>
+          <a href="#vision">Vision</a>
+          <a href="#contact">Contact</a>
+        </div>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="hero-content">
+
+      <h1>
+        Smart Shared <span>EV Mobility</span><br>
+        For Future India
+      </h1>
+
+      <p>
+        Evigo Technologies is building the future of affordable,
+        sustainable, and stress-free commuting through intelligent
+        shared mobility systems, AI-powered ride optimization,
+        and scalable urban transportation solutions.
+      </p>
+
+      <a href="#about" class="btn">
+        Explore Evigo
+      </a>
+
+    </div>
+
+  </section>
+
+  <!-- ABOUT -->
+
+  <section id="about">
+
+    <div class="container about">
+
+      <div class="evigo-box">
+        <img src="logo.png.png" alt="Evigo Logo">
+      </div>
+
+      <div class="about-text">
+
+        <h2 class="section-title">About Evigo</h2>
+
+        <p>
+          Evigo Technologies is a student-led startup focused on solving
+          urban commuting challenges through smart, affordable,
+          and sustainable transportation systems.
+        </p>
+
+        <p>
+          Our mission is to reduce travel stress, improve accessibility,
+          and create intelligent mobility infrastructure for students
+          and working professionals across India.
+        </p>
+
+        <p>
+          We aim to combine AI, EV ecosystems, ride-sharing,
+          and smart route optimization into one scalable platform
+          capable of transforming the future of mobility.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- SOLUTIONS -->
+
+  <section id="solutions">
+
+    <div class="container">
+
+      <h2 class="section-title">
+        What We Are Building
+      </h2>
+
+      <div class="cards">
+
+        <div class="card">
+
+          <h3>Shared EV Mobility</h3>
+
+          <p>
+            Affordable shared transportation systems powered
+            by sustainable electric mobility technology.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>AI Ride Optimization</h3>
+
+          <p>
+            Intelligent route planning and ride matching
+            for efficient and stress-free commuting.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>Urban Smart Transport</h3>
+
+          <p>
+            Smart transportation infrastructure designed
+            for future-ready Indian cities.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>Scalable Platform</h3>
+
+          <p>
+            A future-ready mobility ecosystem capable
+            of expanding into multiple transportation services.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- VISION -->
+
+  <section id="vision">
+
+    <div class="container">
+
+      <h2 class="section-title">
+        Our Vision
+      </h2>
+
+      <div class="vision-card">
+
+        To build India’s most accessible and intelligent mobility platform
+        that empowers millions of commuters through affordable,
+        sustainable, and technology-driven transportation solutions.
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- CONTACT -->
+
+  <section id="contact">
+
+    <div class="container contact">
+
+      <h2 class="section-title">
+        Contact
+      </h2>
+
+      <p><strong>Founder:</strong> Namaldar Pavan</p>
+
+      <p><strong>Startup:</strong> Evigo Technologies</p>
+
+      <p><strong>Email:</strong> namaldarpavan@gmail.com</p>
+
+      <p><strong>Location:</strong> Telangana, India</p>
+
+      <a
+        href="https://www.linkedin.com/in/namaldar-pavan-a0a722213/"
+        target="_blank"
+        class="btn">
+
+        Connect on LinkedIn
+
+      </a>
+
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="container">
+      © 2026 Evigo Technologies. All Rights Reserved.
+    </div>
+
+  </footer>
+
+</body>
+
+</html>
